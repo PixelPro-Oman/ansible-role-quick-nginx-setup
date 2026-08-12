@@ -40,10 +40,21 @@
 
 - name: Set nginx document root for known platforms when not overridden
   set_fact:
-    nginx_document_root: "{{ ' /var/www/html' if ansible_os_family == 'Debian' else '/usr/share/nginx/html' }}"
+    nginx_document_root: "{{ '/var/www/html' if ansible_facts['os_family'] == 'Debian' else '/usr/share/nginx/html' }}"
   when:
     - nginx_document_root | length == 0
-    - ansible_pkg_mgr in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
+    - ansible_facts['pkg_mgr'] in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
+
+- name: Ensure nginx document root exists
+  file:
+    path: "{{ nginx_document_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when:
+    - nginx_deploy_sample_index
+    - nginx_document_root | length > 0
 
 - name: Deploy sample nginx index.html
   template:
@@ -54,12 +65,12 @@
     mode: '0644'
   when:
     - nginx_deploy_sample_index
-    - ansible_pkg_mgr in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
+    - ansible_facts['pkg_mgr'] in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
 
 - name: Fail when the package manager is unsupported
   fail:
     msg: "The quick-nginx-setup role currently supports apt, yum/dnf, zypper, apk, and pacman based systems."
-  when: ansible_pkg_mgr not in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
+  when: ansible_facts['pkg_mgr'] not in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
 
 - name: Ensure nginx service is enabled and started
   service:
