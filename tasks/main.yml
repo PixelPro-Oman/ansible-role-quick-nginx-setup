@@ -1,0 +1,68 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for quick-nginx-setup
+
+- name: Update apt cache when needed
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install nginx on Debian/Ubuntu
+  apt:
+    name: "{{ nginx_package_name }}"
+    state: "{{ nginx_state }}"
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install nginx on yum/dnf systems
+  package:
+    name: "{{ nginx_package_name }}"
+    state: "{{ nginx_state }}"
+  when: ansible_pkg_mgr in ['yum', 'dnf']
+
+- name: Install nginx on SUSE / openSUSE
+  zypper:
+    name: "{{ nginx_package_name }}"
+    state: "{{ nginx_state }}"
+  when: ansible_pkg_mgr == 'zypper'
+
+- name: Install nginx on Alpine Linux
+  apk:
+    name: "{{ nginx_package_name }}"
+    state: present
+  when: ansible_pkg_mgr == 'apk'
+
+- name: Install nginx on Arch Linux / pacman systems
+  pacman:
+    name: "{{ nginx_package_name }}"
+    state: present
+  when: ansible_pkg_mgr == 'pacman'
+
+- name: Set nginx document root for known platforms when not overridden
+  set_fact:
+    nginx_document_root: "{{ ' /var/www/html' if ansible_os_family == 'Debian' else '/usr/share/nginx/html' }}"
+  when:
+    - nginx_document_root | length == 0
+    - ansible_pkg_mgr in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
+
+- name: Deploy sample nginx index.html
+  template:
+    src: index.html.j2
+    dest: "{{ nginx_document_root.rstrip('/') }}/index.html"
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - nginx_deploy_sample_index
+    - ansible_pkg_mgr in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
+
+- name: Fail when the package manager is unsupported
+  fail:
+    msg: "The quick-nginx-setup role currently supports apt, yum/dnf, zypper, apk, and pacman based systems."
+  when: ansible_pkg_mgr not in ['apt', 'yum', 'dnf', 'zypper', 'apk', 'pacman']
+
+- name: Ensure nginx service is enabled and started
+  service:
+    name: "{{ nginx_service_name }}"
+    enabled: "{{ nginx_enabled }}"
+    state: started

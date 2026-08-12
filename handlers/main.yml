@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+---
+# handlers file for quick-nginx-setup
+
+- name: restart nginx
+  service:
+    name: "{{ nginx_service_name }}"
+    state: restarted

@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for quick-nginx-setup
+nginx_package_name: nginx
+nginx_service_name: nginx
+nginx_state: present
+nginx_enabled: true
+nginx_listen_port: 80
+nginx_deploy_sample_index: true
+nginx_document_root: ''

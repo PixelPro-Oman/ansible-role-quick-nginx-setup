@@ -1,0 +1,62 @@
+#SPDX-License-Identifier: MIT-0
+galaxy_info:
+  author: Rusiru Nethmina
+  description: Install and start nginx on supported Linux distributions.
+  company: Pixel Pro
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+        - jammy
+        - kinetic
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+        - bookworm
+    - name: CentOS
+      versions:
+        - 7
+        - 8
+        - 9
+    - name: Rocky
+      versions:
+        - 8
+        - 9
+    - name: AlmaLinux
+      versions:
+        - 8
+        - 9
+    - name: Amazon
+      versions:
+        - 2
+        - 2023
+    - name: openSUSE
+      versions:
+        - leap 15.3
+        - leap 15.4
+        - leap 15.5
+    - name: SUSE
+      versions:
+        - 15.3
+        - 15.4
+        - 15.5
+    - name: Alpine
+      versions:
+        - 3.15
+        - 3.16
+        - 3.17
+        - 3.18
+    - name: Arch
+      versions:
+        - rolling
+  galaxy_tags:
+    - nginx
+    - webserver
+    - install
+    - linux
+
+dependencies: []
