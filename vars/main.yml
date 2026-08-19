@@ -1,3 +1,5 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # vars file for quick-nginx-setup
+nginx_package_name: nginx
+nginx_service_name: nginx
