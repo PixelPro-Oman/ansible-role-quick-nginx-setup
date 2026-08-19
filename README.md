@@ -31,6 +31,7 @@ A beginner-friendly Ansible role that installs and starts nginx on common Linux 
 ```yaml
 - hosts: webservers
   become: true
+  gather_facts: true
   roles:
     vars:
     nginx_listen_port: 80
